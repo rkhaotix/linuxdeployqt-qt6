@@ -70,6 +70,7 @@ QStringList ignoreGlob;
 bool copyCopyrightFiles = true;
 QString updateInformation;
 QString qtLibInfix;
+QString appImagePath;
 
 using std::cout;
 using std::endl;
@@ -1476,7 +1477,7 @@ void createQtConf(const QString &appDirPath)
                   "# https://github.com/probonopd/linuxdeployqt/\n"
                   "[Paths]\n"
                   "Prefix = ../\n"
-                  "Plugins = plugins\n"
+									"Plugins = qtplugins\n"
                   "Imports = qml\n"
                   "Qml2Imports = qml\n";
     } else {
@@ -1484,7 +1485,7 @@ void createQtConf(const QString &appDirPath)
                   "# https://github.com/probonopd/linuxdeployqt/\n"
                   "[Paths]\n"
                       "Prefix = ./\n"
-                  "Plugins = plugins\n"
+									"Plugins = qtplugins\n"
                   "Imports = qml\n"
                   "Qml2Imports = qml\n";
     }
@@ -1541,9 +1542,9 @@ void deployPlugins(const QString &appDirPath, DeploymentInfo deploymentInfo)
     if(fhsLikeMode){
         QFileInfo qfi(applicationBundle.binaryPath);
         QString qtTargetDir = qfi.absoluteDir().absolutePath() + "/../";
-        pluginDestinationPath = qtTargetDir + "/plugins";
+				pluginDestinationPath = qtTargetDir + "/qtplugins";
     } else {
-        pluginDestinationPath = appDirPath + "/" + "plugins";
+				pluginDestinationPath = appDirPath + "/" + "qtplugins";
     }
     deployPlugins(applicationBundle, deploymentInfo.pluginPath, pluginDestinationPath, deploymentInfo);
 }
@@ -1797,8 +1798,9 @@ int createAppImage(const QString &appDirPath)
         updateInfoArgument = QString("-u '%1'").arg(updateInformation);
     }
 
-    QString appImageCommand = "appimagetool -v '" + appDirPath + "' -n " + updateInfoArgument; // +"' '" + appImagePath + "'";
-    LogNormal() << appImageCommand;
+		//QString appImageCommand = "appimagetool -v '" + appDirPath + "' -n " + updateInfoArgument; // +"' '" + appImagePath + "'";
+		QString appImageCommand = "appimagetool -v '" + appDirPath + "' -n " + updateInfoArgument + " '" + appImagePath + "'";
+		LogNormal() << appImageCommand;
     int ret = system(appImageCommand.toUtf8().constData());
     LogNormal() << "ret" << ret;
     LogNormal() << "WEXITSTATUS(ret)" << WEXITSTATUS(ret);

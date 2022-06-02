@@ -59,13 +59,13 @@ int main(int argc, char **argv)
     extern bool bundleAllButCoreLibs;
     extern bool bundleEverything;
     extern bool fhsLikeMode;
-    extern QString fhsPrefix;
+		extern QString fhsPrefix;
     extern QStringList librarySearchPath;
     extern bool alwaysOwerwriteEnabled;    
     QStringList additionalExecutables;
     bool qmldirArgumentUsed = false;
     bool skipTranslations = false;
-    bool skipGlibcCheck = false;
+		bool skipGlibcCheck = true;
     QStringList qmlDirs;
     QStringList qmlImportPaths;
     QString qmakeExecutable;
@@ -75,6 +75,7 @@ int main(int argc, char **argv)
     extern bool copyCopyrightFiles;
     extern QString updateInformation;
     extern QString qtLibInfix;
+		extern QString appImagePath;
 
     // Check arguments
     // Due to the structure of the argument parser, we have to check all arguments at first to check whether the user
@@ -127,6 +128,13 @@ int main(int argc, char **argv)
                 LogError() << "Missing executable path";
             else
                 additionalExecutables << argument.mid(index+1);
+				} else if (argument.startsWith("-appimage-path")) {
+										LogDebug() << "Argument found:" << argument;
+										int index = argument.indexOf('=');
+										if (index == -1)
+												LogError() << "Missing appimage custom path";
+										else
+												appImagePath = argument.mid(index+1);
         } else if (argument.startsWith(QByteArray("-qmldir"))) {
             LogDebug() << "Argument found:" << argument;
             qmldirArgumentUsed = true;
@@ -177,7 +185,7 @@ int main(int argc, char **argv)
         } else if (argument.startsWith("-qtlibinfix=")) {
             LogDebug() << "Argument found:" << argument;
             int index = argument.indexOf("=");
-            qtLibInfix = QString(argument.mid(index+1));
+						qtLibInfix = QString(argument.mid(index+1));
         } else if (argument.startsWith("--")) {
             LogError() << "Error: arguments must not start with --, only -:" << argument << "\n";
             return 1;
@@ -225,6 +233,7 @@ int main(int argc, char **argv)
         qInfo() << "                              searching for libraries.";
         qInfo() << "   -executable=<path>       : Let the given executable use the deployed libraries";
         qInfo() << "                              too";
+				qInfo() << "   -appimage-path=<path>    : Specify a custom path for the generated AppImage.";
         qInfo() << "   -extra-plugins=<list>    : List of extra plugins which should be deployed,";
         qInfo() << "                              separated by comma.";
         qInfo() << "   -no-copy-copyright-files : Skip deployment of copyright files.";
