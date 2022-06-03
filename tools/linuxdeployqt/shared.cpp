@@ -873,8 +873,8 @@ void changeIdentification(const QString &id, const QString &binaryPath)
     runPatchelf(QStringList() << "--set-rpath" << rpath.join(":") << binaryPath);
 
     // qt_prfxpath:
-    if (binaryPath.contains("libQt5Core")) {
-        LogDebug() << "libQt5Core detected, patching its hardcoded strings";
+		if (binaryPath.contains("libQt6Core")) {
+				LogDebug() << "libQt6Core detected, patching its hardcoded strings";
 
         /* https://codereview.qt-project.org/gitweb?p=qt/qttools.git;a=blob_plain;f=src/windeployqt/utils.cpp;h=e89496ea1f371ed86f6937284c1c801daf576572;hb=7be81b804da102b374c2089aac38353a0383c254
          * Search for "qt_prfxpath=<xxx>" in a path, and replace it with "qt_prfxpath=." or "qt_prfxpath=.." */
@@ -1234,8 +1234,8 @@ void deployPlugins(const AppDirInfo &appDirInfo, const QString &pluginSourcePath
     LogDebug() << "deploymentInfo.deployedLibraries before attempting to bundle required plugins:" << deploymentInfo.deployedLibraries;
 
     // Platform plugin:
-    if (containsHowOften(deploymentInfo.deployedLibraries, "libQt5Gui")) {
-        LogDebug() << "libQt5Gui detected";
+		if (containsHowOften(deploymentInfo.deployedLibraries, "libQt6Gui")) {
+				LogDebug() << "libQt6Gui detected";
         pluginList.append("platforms/libqxcb.so");
 	// Platform plugin contexts - apparently needed to enter special characters
         QStringList platformPluginContexts = QDir(pluginSourcePath +  QStringLiteral("/platforminputcontexts")).entryList(QStringList() << QStringLiteral("*.so"));
@@ -1291,9 +1291,9 @@ void deployPlugins(const AppDirInfo &appDirInfo, const QString &pluginSourcePath
     }
 
     // Platform OpenGL context
-    if ((containsHowOften(deploymentInfo.deployedLibraries, "libQt5OpenGL"))
-		    or (containsHowOften(deploymentInfo.deployedLibraries, "libQt5Gui"))
-		    or (containsHowOften(deploymentInfo.deployedLibraries, "libQt5XcbQpa"))
+		if ((containsHowOften(deploymentInfo.deployedLibraries, "libQt6OpenGL"))
+				or (containsHowOften(deploymentInfo.deployedLibraries, "libQt6Gui"))
+				or (containsHowOften(deploymentInfo.deployedLibraries, "libQt6XcbQpa"))
 		    or (containsHowOften(deploymentInfo.deployedLibraries, "libxcb-glx"))) {
         QStringList xcbglintegrationPlugins = QDir(pluginSourcePath +  QStringLiteral("/xcbglintegrations")).entryList(QStringList() << QStringLiteral("*.so"));
         foreach (const QString &plugin, xcbglintegrationPlugins) {
@@ -1303,17 +1303,17 @@ void deployPlugins(const AppDirInfo &appDirInfo, const QString &pluginSourcePath
 
     // Also deploy plugins/iconengines/libqsvgicon.so whenever libQt5Svg.so.* is about to be deployed,
     // https://github.com/probonopd/linuxdeployqt/issues/36
-    if (containsHowOften(deploymentInfo.deployedLibraries, "libQt5Svg")) {
+		if (containsHowOften(deploymentInfo.deployedLibraries, "libQt6Svg")) {
         pluginList.append(QStringLiteral("iconengines/libqsvgicon.so"));
     }
 
     // CUPS print support
-    if (containsHowOften(deploymentInfo.deployedLibraries, "libQt5PrintSupport")) {
+		if (containsHowOften(deploymentInfo.deployedLibraries, "libQt6PrintSupport")) {
         pluginList.append("printsupport/libcupsprintersupport.so");
     }
 
     // Network
-    if (containsHowOften(deploymentInfo.deployedLibraries, "libQt5Network")) {
+		if (containsHowOften(deploymentInfo.deployedLibraries, "libQt6Network")) {
         QStringList bearerPlugins = QDir(pluginSourcePath +  QStringLiteral("/bearer")).entryList(QStringList() << QStringLiteral("*.so"));
         foreach (const QString &plugin, bearerPlugins) {
             pluginList.append(QStringLiteral("bearer/") + plugin);
@@ -1321,7 +1321,7 @@ void deployPlugins(const AppDirInfo &appDirInfo, const QString &pluginSourcePath
     }
 
     // Sql plugins if QtSql library is in use
-    if (containsHowOften(deploymentInfo.deployedLibraries, "libQt5Sql")) {
+		if (containsHowOften(deploymentInfo.deployedLibraries, "libQt6Sql")) {
         QStringList sqlPlugins = QDir(pluginSourcePath +  QStringLiteral("/sqldrivers")).entryList(QStringList() << QStringLiteral("*.so"));
         foreach (const QString &plugin, sqlPlugins) {
             pluginList.append(QStringLiteral("sqldrivers/") + plugin);
@@ -1329,7 +1329,7 @@ void deployPlugins(const AppDirInfo &appDirInfo, const QString &pluginSourcePath
     }
 
     // Positioning plugins if QtPositioning library is in use
-    if (containsHowOften(deploymentInfo.deployedLibraries, "libQt5Positioning")) {
+		if (containsHowOften(deploymentInfo.deployedLibraries, "libQt6Positioning")) {
         QStringList posPlugins = QDir(pluginSourcePath +  QStringLiteral("/position")).entryList(QStringList() << QStringLiteral("*.so"));
         foreach (const QString &plugin, posPlugins) {
             pluginList.append(QStringLiteral("position/") + plugin);
@@ -1337,7 +1337,7 @@ void deployPlugins(const AppDirInfo &appDirInfo, const QString &pluginSourcePath
     }
 
     // multimedia plugins if QtMultimedia library is in use
-    if (containsHowOften(deploymentInfo.deployedLibraries, "libQt5Multimedia")) {
+		if (containsHowOften(deploymentInfo.deployedLibraries, "libQt6Multimedia")) {
         QStringList plugins = QDir(pluginSourcePath + QStringLiteral("/mediaservice")).entryList(QStringList() << QStringLiteral("*.so"));
         foreach (const QString &plugin, plugins) {
             pluginList.append(QStringLiteral("mediaservice/") + plugin);
@@ -1357,7 +1357,7 @@ void deployPlugins(const AppDirInfo &appDirInfo, const QString &pluginSourcePath
     // from the Qt instance that is to be bundled (pull requests welcome!)
     // especially since stuff that is supposed to come from resources actually
     // seems to come in libexec in the upstream Qt binary distribution
-    if (containsHowOften(deploymentInfo.deployedLibraries, "libQt5WebEngineCore")) {
+		if (containsHowOften(deploymentInfo.deployedLibraries, "libQt6WebEngineCore")) {
         // Find directories with needed files:
         QString qtLibexecPath = qtToBeBundledInfo.value("QT_INSTALL_LIBEXECS");
         QString qtDataPath = qtToBeBundledInfo.value("QT_INSTALL_DATA");
